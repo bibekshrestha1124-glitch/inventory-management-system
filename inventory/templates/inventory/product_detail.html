@@ -1,0 +1,29 @@
+{% extends 'inventory/base.html' %}
+{% block title %}{{ object.name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><h3 class="mb-0">{{ object.name }} {% with p=object %}{% include 'inventory/_stock_badge.html' %}{% endwith %}</h3>
+  <div><a href="{% url 'inventory:stock_in' %}?product={{ object.pk }}" class="btn btn-success btn-sm">Stock In</a>
+  <a href="{% url 'inventory:stock_out' %}?product={{ object.pk }}" class="btn btn-danger btn-sm">Stock Out</a>
+  <a href="{% url 'inventory:product_update' object.pk %}" class="btn btn-primary btn-sm">Edit</a>
+  <a href="{% url 'inventory:product_delete' object.pk %}" class="btn btn-outline-danger btn-sm">Delete</a></div></div>
+<div class="row g-3">
+  <div class="col-lg-4"><div class="card"><div class="card-body">
+    <dl class="row mb-0">
+      <dt class="col-5">SKU</dt><dd class="col-7">{{ object.sku }}</dd>
+      <dt class="col-5">Category</dt><dd class="col-7">{{ object.category|default:"-" }}</dd>
+      <dt class="col-5">Supplier</dt><dd class="col-7">{{ object.supplier|default:"-" }}</dd>
+      <dt class="col-5">Cost price</dt><dd class="col-7">Rs. {{ object.cost_price }}</dd>
+      <dt class="col-5">Selling price</dt><dd class="col-7">Rs. {{ object.selling_price }}</dd>
+      <dt class="col-5">In stock</dt><dd class="col-7 fw-bold">{{ object.quantity }}</dd>
+      <dt class="col-5">Reorder level</dt><dd class="col-7">{{ object.reorder_level }}</dd>
+      <dt class="col-5">Stock value</dt><dd class="col-7">Rs. {{ object.stock_value }}</dd>
+      <dt class="col-5">Description</dt><dd class="col-7">{{ object.description|default:"-" }}</dd>
+    </dl></div></div></div>
+  <div class="col-lg-8"><div class="card"><div class="card-header bg-white fw-semibold">Recent movements</div>
+    <div class="table-responsive"><table class="table table-sm mb-0">
+      <thead><tr><th>Date</th><th>Type</th><th class="text-end">Qty</th><th>Supplier</th><th>Note</th><th>By</th></tr></thead>
+      {% for m in movements %}<tr><td>{{ m.created_at|date:"d M Y, H:i" }}</td><td>{% if m.movement_type == 'IN' %}<span class="badge bg-success">IN</span>{% else %}<span class="badge bg-danger">OUT</span>{% endif %}</td><td class="text-end">{{ m.quantity }}</td><td>{{ m.supplier|default:"-" }}</td><td>{{ m.note|default:"-" }}</td><td>{{ m.created_by|default:"-" }}</td></tr>
+      {% empty %}<tr><td colspan="6" class="text-center text-muted py-3">No movements yet.</td></tr>{% endfor %}
+    </table></div></div></div>
+</div>
+{% endblock %}

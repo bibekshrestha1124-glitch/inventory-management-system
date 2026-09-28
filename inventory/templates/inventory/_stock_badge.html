@@ -1,0 +1,1 @@
+{% if p.quantity == 0 %}<span class="badge bg-danger">Out of stock</span>{% elif p.is_low_stock %}<span class="badge bg-warning text-dark">Low stock</span>{% else %}<span class="badge bg-success">In stock</span>{% endif %}
